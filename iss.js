@@ -1,7 +1,10 @@
 const request = require('request');
 
+/**
+ * Fetches IP address from JSON API
+ * @param {function} callback - callback function
+ */
 const fetchMyIp = function(callback) {
-  // use request to fetch IP address from JSON API
   request('https://api.ipify.org/?format=json', (error, response, body) => {
     if (error) {
       return callback(error, null);
@@ -17,7 +20,11 @@ const fetchMyIp = function(callback) {
   });
 };
 
-
+/**
+ * Fetches latitude and longitude coordinates by IP address
+ * @param {string} ip - IP address
+ * @param {function} callback - callback function
+ */
 const fetchCoordsByIp = function(ip, callback) {
   request(`http://ipwho.is/${ip}`, (error, response, body) => {
     if (error) {
@@ -26,7 +33,7 @@ const fetchCoordsByIp = function(ip, callback) {
     }
     const parsedBody = JSON.parse(body);
     if (!parsedBody.success) {
-      const msg = `Success status was ${parsedBody.success}. Server message says: ${parsedBody.message}         when fetching for IP ${parsedBody.ip}`;
+      const msg = `Success status was ${parsedBody.success}. Server message says: ${parsedBody.message} when fetching for IP ${parsedBody.ip}`;
       callback(Error(msg), null);
       return;
     }
@@ -36,8 +43,11 @@ const fetchCoordsByIp = function(ip, callback) {
   });
 };
 
-
-
+/**
+ * Fetches ISS flyover times
+ * @param {Object} coords - contains latitude and longitude coordinates
+ * @param {function} callback - callback function
+ */
 const fetchISSFlyOverTimes = function(coords, callback) {
   request(`https://iss-flyover.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`, (error, response, body) => {
     if (error) {
@@ -55,7 +65,10 @@ const fetchISSFlyOverTimes = function(coords, callback) {
   });
 };
 
-
+/**
+ * Fetches the next ISS flyover times for the user's current location
+ * @param {function} callback - callback function
+ */
 const nextISSTimesForMyLocation = function(callback) {
   fetchMyIp((error, ip) => {
     if (error) {
